@@ -50,12 +50,12 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/sso-k8s:${{ github.sha }}
-            ghcr.io/${{ github.repository_owner }}/sso-k8s:latest
+            ghcr.io/truetruwowng/sso-k8s:${{ github.sha }}
+            ghcr.io/truetruwowng/sso-k8s:latest
 
       - name: Update k8s deployment image and commit
         env:
-          IMAGE: ghcr.io/${{ github.repository_owner }}/sso-k8s:${{ github.sha }}
+          IMAGE: ghcr.io/truetruwowng/sso-k8s:${{ github.sha }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
