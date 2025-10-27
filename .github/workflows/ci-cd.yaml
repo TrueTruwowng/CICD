@@ -8,6 +8,7 @@ on:
 # Allow the workflow to push manifest updates back to the repository
 permissions:
   contents: write
+  packages: write
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/sso-k8s
@@ -69,4 +70,3 @@ jobs:
           else
             echo "No manifest changes to commit."
           fi
-
