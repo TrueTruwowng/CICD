@@ -1,29 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sso-app
+  name: sso-app-v2
   labels:
-    app: sso-app
+    app: sso-app-v2
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: sso-app
+      app: sso-app-v2
   template:
     metadata:
       labels:
-        app: sso-app
+        app: sso-app-v2
     spec:
-      imagePullSecrets:
-        - name: ghcr-auth
       initContainers:
         - name: wait-for-mysql
           image: busybox:1.36
           command: ['sh', '-c', 'until nc -z mysql 3306; do echo waiting for mysql; sleep 2; done']
       containers:
         - name: sso-app
-          image: ghcr.io/truetruwowng/sso-k8s:latest
-          imagePullPolicy: Always
+          image: sso-k8s:local
+          imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://mysql:3306/spring_security_demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
@@ -41,24 +39,34 @@ spec:
               value: "-1"
             - name: SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT
               value: "30000"
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx512m"
           ports:
             - containerPort: 8080
               name: http
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 20
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 15
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
             failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 45
-            periodSeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
             failureThreshold: 3
           resources:
             requests:
@@ -67,3 +75,4 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
