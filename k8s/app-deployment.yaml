@@ -22,7 +22,7 @@ spec:
           command: ["sh","-c","until nc -z -v -w30 mysql 3306; do echo 'waiting for mysql'; sleep 3; done;"]
       containers:
         - name: sso-app
-          image: ghcr.io/TrueTruwowng/sso-k8s:latest
+          image: ghcr.io/truetruwowng/sso-k8s:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL

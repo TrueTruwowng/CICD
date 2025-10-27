@@ -6,8 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    # Replace the repoURL with your GitHub repo (HTTPS)
-    repoURL: "https://github.com/TrueTruwowng/CICD"
+    repoURL: "https://github.com/truetruwowng/CICD"
     targetRevision: HEAD
     path: "k8s"
   destination:
@@ -21,7 +20,5 @@ spec:
       - CreateNamespace=true
 
 # Notes:
-#  - Replace <ORG_OR_USER> and <REPO> with your repository values.
-#  - Argo CD will watch the `k8s` folder in that repo and deploy resources found there.
-#  - This manifest must be applied to the `argocd` namespace (where Argo CD is installed).
-
+#  - If your repository URL or path differs, edit this file before applying.
+#  - If the repo is private, add the repo credentials in Argo CD (UI or `argocd repo add`).
