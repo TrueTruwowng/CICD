@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8" />
+    <title>SSO Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+<header>
+    <h1>SSO Demo Dashboard</h1>
+    <nav>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/profile}" sec:authorize="isAuthenticated()">Profile</a>
+        <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Login</a>
+        <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Logout</a>
+    </nav>
+</header>
+<div class="container">
+    <div class="panel" sec:authorize="isAuthenticated()">
+        <div class="flex-between">
+            <h2>Welcome</h2>
+            <span class="badge" th:text="${userName}">User</span>
+        </div>
+        <p class="small">You are authenticated via an OAuth2 / OIDC provider. Use the API tester below or view detailed claims on the profile page.</p>
+    </div>
+    <div class="panel" sec:authorize="!isAuthenticated()">
+        <h2>Not signed in</h2>
+        <p class="small">Choose a provider to begin authentication:</p>
+        <div class="provider-list">
+            <a th:if="${auth0Configured}" class="provider-card" th:href="@{/oauth2/authorization/auth0}"><span>Auth0</span><span class="badge">OIDC</span></a>
+            <a th:if="${googleConfigured}" class="provider-card" th:href="@{/oauth2/authorization/google}"><span>Google</span><span class="badge alt">OIDC</span></a>
+            <a th:if="${githubConfigured}" class="provider-card" th:href="@{/oauth2/authorization/github}"><span>GitHub</span><span class="badge gray">OAuth2</span></a>
+        </div>
+        <div th:if="${!auth0Configured and !googleConfigured and !githubConfigured}" class="alert" style="margin-top:1rem;">No provider configured. Set environment variables and restart.</div>
+    </div>
+    <div class="grid api-grid">
+        <div class="panel">
+            <h2>Provider Status</h2>
+            <table class="table">
+                <thead><tr><th>Provider</th><th>Status</th><th>Type</th></tr></thead>
+                <tbody>
+                <tr><td>Auth0</td><td><span class="status-dot" th:classappend="${auth0Configured}? ' ok' : ''"></span><span th:text="${auth0Configured}? 'Ready':'Missing'"></span></td><td>OIDC</td></tr>
+                <tr><td>Google</td><td><span class="status-dot" th:classappend="${googleConfigured}? ' ok' : ''"></span><span th:text="${googleConfigured}? 'Ready':'Missing'"></span></td><td>OIDC</td></tr>
+                <tr><td>GitHub</td><td><span class="status-dot" th:classappend="${githubConfigured}? ' ok' : ''"></span><span th:text="${githubConfigured}? 'Ready':'Missing'"></span></td><td>OAuth2</td></tr>
+                </tbody>
+            </table>
+            <p class="small">Restart the app after changing environment variables.</p>
+        </div>
+        <div class="panel">
+            <h2>API Tester</h2>
+            <p class="small">Try calling a protected API endpoint below (requires authentication).</p>
+            <form method="get" th:action="@{/api/test}" sec:authorize="isAuthenticated()">
+                <button class="btn" type="submit">Call /api/test</button>
+            </form>
+            <div sec:authorize="!isAuthenticated()" class="notice" style="margin-top:1rem;">Sign in to test API access.</div>
+        </div>
+    </div>
+</div>
+<footer>
+    <span>Demo Security UI</span>
+    <span class="small">&copy; 2025</span>
+</footer>
+</body>
+</html>

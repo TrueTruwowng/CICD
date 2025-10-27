@@ -1,0 +1,7 @@
+# Ignore Maven/IDE files and folders
+# /target/
+*.iml
+*.log
+*.md
+/.idea/
+/.vscode/

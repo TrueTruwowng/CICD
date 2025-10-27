@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          auth0:
+            client-id: test
+            client-secret: test
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+        provider:
+          auth0:
+            # Supply explicit endpoints so Spring does not attempt OIDC discovery
+            authorization-uri: https://example.invalid/authorize
+            token-uri: https://example.invalid/oauth/token
+            jwk-set-uri: https://example.invalid/.well-known/jwks.json
+            user-info-uri: https://example.invalid/userinfo
+            user-name-attribute: sub
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://example.invalid/.well-known/jwks.json
+
+auth0:
+  audience:

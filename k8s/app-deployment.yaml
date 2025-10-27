@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sso-app
+  labels:
+    app: sso-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sso-app
+  template:
+    metadata:
+      labels:
+        app: sso-app
+    spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command: ["sh","-c","until nc -z -v -w30 mysql 3306; do echo 'waiting for mysql'; sleep 3; done;"]
+      containers:
+        - name: sso-app
+          image: your-registry/ssok8s:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/spring_security_demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: mysql-user
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: mysql-password
+            - name: SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT
+              value: "-1"
+            - name: SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT
+              value: "30000"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

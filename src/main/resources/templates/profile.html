@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8" />
+    <title>Profile • SSO Demo</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+<header>
+    <h1>User Profile</h1>
+    <nav>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/profile}" sec:authorize="isAuthenticated()">Profile</a>
+        <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Login</a>
+        <a th:href="@{/logout}" sec:authorize="isAuthenticated()">Logout</a>
+    </nav>
+</header>
+<div class="container">
+    <div class="panel" sec:authorize="!isAuthenticated()">
+        <h2>Chưa đăng nhập</h2>
+        <p class="small">Vui lòng <a th:href="@{/login}">đăng nhập</a> để xem thông tin hồ sơ.</p>
+    </div>
+    <!-- Profile Overview Panel -->
+    <div class="panel" sec:authorize="isAuthenticated()">
+        <h2 style="margin-top:0;">Overview</h2>
+        <div class="profile-overview">
+            <div class="avatar-wrapper">
+                <div th:if="${pictureUrl == null}" class="avatar fallback" th:text="${(displayName != null ? displayName.substring(0,1) : 'U').toUpperCase()}">U</div>
+                <img th:if="${pictureUrl != null}" th:src="${pictureUrl}" alt="avatar" class="avatar" />
+            </div>
+            <div class="profile-meta">
+                <h2 th:text="${displayName != null ? displayName : 'User'}">User</h2>
+                <div class="meta-grid">
+                    <div class="meta-item" th:if="${primaryEmail != null}">
+                        <strong>Email</strong>
+                        <button class="copy-btn-inline" type="button" onclick="copyInline(this)" data-target="emailVal">Copy</button>
+                        <span id="emailVal" th:text="${primaryEmail}">user@example.com</span>
+                    </div>
+                    <div class="meta-item" th:if="${issuer != null}">
+                        <strong>Issuer</strong>
+                        <button class="copy-btn-inline" type="button" onclick="copyInline(this)" data-target="issVal">Copy</button>
+                        <span id="issVal" th:text="${issuer}">issuer</span>
+                    </div>
+                    <div class="meta-item" th:if="${subject != null}">
+                        <strong>Subject</strong>
+                        <button class="copy-btn-inline" type="button" onclick="copyInline(this)" data-target="subVal">Copy</button>
+                        <span id="subVal" th:text="${subject}">sub</span>
+                    </div>
+                    <div class="meta-item" th:if="${providerType != null}">
+                        <strong>Provider Type</strong>
+                        <span th:text="${providerType}">OIDC</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <h3>Claims / Attributes</h3>
+        <div class="claims-grid">
+            <div class="claim-row" th:each="claim : ${claims}">
+                <div class="claim-key" th:text="${claim.key}"></div>
+                <div class="claim-value" th:text="${claim.value}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <span>Demo Security UI</span>
+    <span class="small">&copy; 2025</span>
+</footer>
+<script>
+function copyInline(btn) {
+    var targetId = btn.getAttribute('data-target');
+    var val = document.getElementById(targetId).innerText;
+    navigator.clipboard.writeText(val);
+    btn.innerText = 'Copied!';
+    setTimeout(function(){ btn.innerText = 'Copy'; }, 1200);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sso-app
+  labels:
+    app: sso-app
+spec:
+  selector:
+    app: sso-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+

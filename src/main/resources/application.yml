@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+spring:
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          auth0:
+            client-id: ${AUTH0_CLIENT_ID:SgY5cQrdr8HiUpBcXSK9uqE11JzyOXZI}
+            client-secret: ${AUTH0_CLIENT_SECRET:PQEvjjn1pdRu8xmYE6dfPuuqjrbcI7Exi_RzHaW4HgmMqWnWdVfPQdgYh3TlIiKT}
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:812947712417-kskh338qoq52i8eunacqvdr2f5obfnnq.apps.googleusercontent.com}
+            client-secret: ${GOOGLE_CLIENT_SECRET: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}
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+          github:
+            client-id: ${GITHUB_CLIENT_ID:Ov23liMyNoXJsrr0Djpc}
+            client-secret: ${GITHUB_CLIENT_SECRET:e6941ddf0bd9e13546aad52961df50d968152af7}
+            scope: read:user,user:email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+        provider:
+          auth0:
+            # Use explicit endpoints to avoid OIDC discovery when AUTH0_DOMAIN is unset
+            authorization-uri: https://${AUTH0_DOMAIN:dev-ekmub4dsc8keyk1f.us.auth0.com}/authorize
+            token-uri: https://${AUTH0_DOMAIN:dev-ekmub4dsc8keyk1f.us.auth0.com}/oauth/token
+            jwk-set-uri: https://${AUTH0_DOMAIN:dev-ekmub4dsc8keyk1f.us.auth0.com}/.well-known/jwks.json
+            user-info-uri: https://${AUTH0_DOMAIN:dev-ekmub4dsc8keyk1f.us.auth0.com}/userinfo
+            user-name-attribute: sub
+      resourceserver:
+        jwt:
+          # Avoid discovery; rely on explicit JWKS endpoint (Auth0 only). If using only Google/GitHub login (session based), can remove.
+          jwk-set-uri: https://${AUTH0_DOMAIN:example.invalid}/.well-known/jwks.json
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/spring_security_demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:1}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Custom property for audience (API Identifier in Auth0) if you need access tokens for API calls
+auth0:
+  audience: ${AUTH0_AUDIENCE:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.security: INFO
