@@ -33,6 +33,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Make Maven wrapper executable
+        run: chmod +x ./mvnw
+
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
 
@@ -75,6 +78,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update image to ${{ github.sha }}"
+            git commit -m "Update image to ${{ github.sha }} [skip ci]"
             git push
           fi

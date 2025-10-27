@@ -34,18 +34,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
+      - name: Make Maven wrapper executable
+        run: chmod +x ./mvnw
+
       - name: Build with Maven (run tests)
-        run: mvn -B -e -V package
+        run: ./mvnw -B -e -V package -DskipTests
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image to GHCR
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
