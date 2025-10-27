@@ -34,11 +34,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      - name: Make Maven wrapper executable
-        run: chmod +x ./mvnw
-
       - name: Build with Maven (run tests)
-        run: ./mvnw -B -e -V package -DskipTests
+        run: mvn -B -e -V package -DskipTests
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
