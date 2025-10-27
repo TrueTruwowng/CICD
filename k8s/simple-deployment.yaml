@@ -18,7 +18,7 @@ spec:
         - name: ghcr-auth
       containers:
         - name: sso
-          image: ghcr.io/TrueTruwowng/sso-k8s:163e81f7b0f3676217e625ab2804fd7f69dcffc2
+          image: ghcr.io/TrueTruwowng/sso-k8s:b6a2128f1c403d2f4f579fbf4519415a1f8af3e5
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
