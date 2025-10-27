@@ -18,11 +18,11 @@ spec:
         - name: ghcr-auth
       initContainers:
         - name: wait-for-mysql
-          image: ghcr.io/truetruwowng/sso-k8s:ce85a3820566829b69f95c867ece05b21255c104
+          image: ghcr.io/truetruwowng/sso-k8s:2066bc67ce76309c23c74729392e46984848a621
           command: ['sh', '-c', 'until nc -z mysql 3306; do echo waiting for mysql; sleep 2; done']
       containers:
         - name: sso-app
-          image: ghcr.io/truetruwowng/sso-k8s:ce85a3820566829b69f95c867ece05b21255c104
+          image: ghcr.io/truetruwowng/sso-k8s:2066bc67ce76309c23c74729392e46984848a621
           imagePullPolicy: Always
           env:
             - name: SPRING_DATASOURCE_URL
