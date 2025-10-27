@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/sso-k8s
+  IMAGE_NAME: ghcr.io/truetruwowng/sso-k8s
 
 jobs:
   build-and-update:
