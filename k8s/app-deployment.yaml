@@ -5,7 +5,7 @@ metadata:
   labels:
     app: sso-app
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: sso-app
@@ -20,7 +20,7 @@ spec:
           command: ["sh","-c","until nc -z -v -w30 mysql 3306; do echo 'waiting for mysql'; sleep 3; done;"]
       containers:
         - name: sso-app
-          image: your-registry/ssok8s:latest
+          image: sso-k8s:local
           imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL
