@@ -67,4 +67,5 @@ jobs:
           fi
           git add k8s/app-deployment.yaml
           git commit -m "ci: bump image to $IMAGE [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main || true
           git push origin HEAD:main

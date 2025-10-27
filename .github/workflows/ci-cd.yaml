@@ -76,6 +76,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add k8s/app-deployment.yaml
             git commit -m "ci: update image to ${IMAGE_NAME}:${GITHUB_SHA} [skip ci]"
+            git pull --rebase origin main
             git push origin HEAD:main
           else
             echo "No manifest changes to commit."
